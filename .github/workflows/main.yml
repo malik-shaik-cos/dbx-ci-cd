@@ -12,7 +12,7 @@ jobs:
       - name: Deploy to Databricks
         uses: databricks/terraform-action@v1
         with:
-          token: ${{ ${{ secrets.DATABRICKS_TOKEN_DEV }} }}
+          token: ${{ secrets.DATABRICKS_TOKEN_DEV }}
           workspace-url: ${{ secrets.WORKSPACE_URL }}
           notebooks: |
             [
