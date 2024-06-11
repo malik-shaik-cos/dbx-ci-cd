@@ -25,4 +25,5 @@ jobs:
         env:
           DATABRICKS_HOST: https://adb-6399455296052405.5.azuredatabricks.net
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
+          DATABRICKS_BUNDLE_ENV: dev
         run: databricks bundle deploy --debug
