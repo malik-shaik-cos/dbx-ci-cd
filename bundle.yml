@@ -1,0 +1,15 @@
+bundle:
+  name: hello-bundle
+
+resources:
+  jobs:
+    hello-job:
+      name: hello-bundle-job
+      tasks:
+        - task_key: Extract
+          notebook_task:
+            notebook_path: ./src/main/extract.py
+
+targets:
+  dev:
+    default: true
