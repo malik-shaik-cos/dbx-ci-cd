@@ -3,28 +3,64 @@ bundle:
 
 resources:
   jobs:
-    hello-job:
-      name: hello-bundle-job
+    inference_job:
+      name: ${bundle.target}_inference_job
+      job_clusters:
+        - job_cluster_key: inference_job_cluster
+          new_cluster:
+            num_workers: 1
+            spark_version: 14.3.x-scala2.12
+            node_type_id: Standard_DS3_v2
       tasks:
         - task_key: Extract
+          job_cluster_key: inference_job_cluster
           notebook_task:
             notebook_path: ./src/main/extract.py
-      # job_clusters:
-      #   - job_cluster_key: Job_cluster
-      new_cluster:
-        cluster_name: "NEW-JOB-CLUSTER"
-        spark_version: 14.3.x-scala2.12
-        azure_attributes:
-          first_on_demand: 1
-          availability: ON_DEMAND_AZURE
-          spot_bid_max_price: -1
-        node_type_id: Standard_DS3_v2
-        spark_env_vars:
-          PYSPARK_PYTHON: /databricks/python3/bin/python3
-        enable_elastic_disk: true
-        data_security_mode: LEGACY_SINGLE_USER_STANDARD
-        runtime_engine: PHOTON
-        num_workers: 1
+      # tasks:
+      #   - task_key: feature_engineering
+      #     job_cluster_key: inference_job_cluster
+      #     notebook_task:
+      #       notebook_path: ../feature_engineering/notebooks/feature_engineering.py
+      #       base_parameters:
+      #         feature_path: ${var.feature_path}
+      #   - task_key: inference
+      #     depends_on:
+      #       - task_key: feature_engineering
+      #     job_cluster_key: inference_job_cluster
+      #     notebook_task:
+      #       notebook_path: ../inference/notebooks/inference.py
+      #       base_parameters:
+      #         feature_path: ${var.feature_path}
+      #         model_name: ${var.model_name}
+      #         predictions_table_name: ${var.predictions_table_name}
+      # schedule:
+      #   quartz_cron_expression: "0 0 11 * * ?"
+      #   timezone_id: UTC
+      # email_notifications:
+      #   on_failure:
+      #     - first.last@company.com
+    # hello-job:
+    #   name: hello-bundle-job
+    #   tasks:
+    #     - task_key: Extract
+    #       notebook_task:
+    #         notebook_path: ./src/main/extract.py
+    #   # job_clusters:
+    #   #   - job_cluster_key: Job_cluster
+    #   new_cluster:
+    #     cluster_name: "NEW-JOB-CLUSTER"
+    #     spark_version: 14.3.x-scala2.12
+    #     azure_attributes:
+    #       first_on_demand: 1
+    #       availability: ON_DEMAND_AZURE
+    #       spot_bid_max_price: -1
+    #     node_type_id: Standard_DS3_v2
+    #     spark_env_vars:
+    #       PYSPARK_PYTHON: /databricks/python3/bin/python3
+    #     enable_elastic_disk: true
+    #     data_security_mode: LEGACY_SINGLE_USER_STANDARD
+    #     runtime_engine: PHOTON
+    #     num_workers: 1
 
 targets:
   dev:
