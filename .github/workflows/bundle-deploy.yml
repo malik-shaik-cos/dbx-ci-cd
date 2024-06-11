@@ -45,9 +45,9 @@ jobs:
 
       # - name: Write to .databrickscfg
       - run: |
-          echo "[DEFAULT]" > $HOME/.databrickscfg
-          echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
-          echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
+          echo "[DEFAULT]" > .databrickscfg
+          echo "host = ${{ secrets.WORKSPACE_URL }}" >> .databrickscfg
+          echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> .databrickscfg
 
       # Deploy the bundle to the "qa" target as defined
       # in the bundle's settings file.
