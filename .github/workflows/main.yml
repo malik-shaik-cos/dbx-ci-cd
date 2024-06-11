@@ -22,10 +22,8 @@ jobs:
         run: pip install databricks-cli
 
       # Step 2: Authenticate with Databricks if needed
-      - name: Authenticate with Databricks
-        run: |
-          databricks workspace configure --url ${{ secrets.WORKSPACE_URL }} && databricks configure --token ${{ secrets.DATABRICKS_TOKEN_DEV }} 
-
+      - name: Authenticate with Azure Databricks
+        run: dbc configure --token ${{ secrets.DATABRICKS_TOKEN_DEV }} --url ${{ secrets.WORKSPACE_URL }}
 
       # Step 3: Create Databricks job cluster
       - name: Create Databricks job cluster
