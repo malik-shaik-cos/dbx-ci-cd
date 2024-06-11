@@ -1,42 +1,27 @@
-name: Azure Databricks Job Submission
-
+name: Deploy Databricks Notebooks
 on:
   push:
     branches:
       - main
-
 jobs:
-  build:
+  deploy-databricks:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout latest code
+      - name: Checkout repo
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Deploy to Databricks
+        uses: databricks/terraform-action@v1
         with:
-          python-version: '3.x'
-
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
-
-      # Step 2: Authenticate with Databricks if needed
-      - name: Authenticate with Azure Databricks
-        run: dbc configure --token ${{ secrets.DATABRICKS_TOKEN_DEV }} --url ${{ secrets.WORKSPACE_URL }}
-
-      # Step 3: Create Databricks job cluster
-      - name: Create Databricks job cluster
-        run: |
-          databricks clusters create --json-file cluster_config.json
-
-      
-      # Step 4: Copy source code to Databricks
-      - name: Copy source code to Databricks
-        run: |
-          databricks workspace import_dir . /Repos/release
-        
-      # Step 5: Submit jobs
-      - name: Submit Databricks jobs
-        run: |
-          databricks jobs create --yml-file jobs/etl-workflow.yml
+          token: ${{ ${{ secrets.DATABRICKS_TOKEN_DEV }} }}
+          workspace-url: ${{ secrets.WORKSPACE_URL }}
+          notebooks: |
+            [
+              {
+                "path": "/Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/extract",
+                "format": "SOURCE"
+              },
+              {
+                "path": "/Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/transform",
+                "format": "SOURCE"
+              }
+            ]
