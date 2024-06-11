@@ -39,4 +39,4 @@ jobs:
       - name: Deploy to Dev
         if: github.ref == 'refs/heads/main'
         run: |
-          curl -X POST -H "Authorization: Bearer ${{ secrets.DATABRICKS_TOKEN_DEV }}" -H "Content-Type: application/json" -d '{"path": "/src/main/extract", "overwrite": true}' "https://${{ secrets.WORKSPACE_URL }}/api/2.0/workspace/import" --data-binary @/tmp/asset_bundle.zip
+          curl -X POST -H "Authorization: Bearer ${{ secrets.DATABRICKS_TOKEN_DEV }}" -H "Content-Type: application/json" -d '{"path": "/src/main/extract", "overwrite": true}' "${{ secrets.WORKSPACE_URL }}/api/2.0/workspace/import" --data-binary @/tmp/asset_bundle.zip
