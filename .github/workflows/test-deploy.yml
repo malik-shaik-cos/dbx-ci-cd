@@ -18,10 +18,11 @@ jobs:
       - name: Write to .databrickscfg
         run: |
           echo "[DEFAULT]" > $HOME/.databrickscfg
-          echo "host = https://adb-6399455296052405.5.azuredatabricks.net/" >> $HOME/.databrickscfg
-          echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
+          echo "host = $DATABRICKS_HOST" >> $HOME/.databrickscfg
+          echo "token = $DATABRICKS_TOKEN" >> $HOME/.databrickscfg
 
       - name: Run databricks bundle deploy
         env:
+          DATABRICKS_HOST: https://adb-6399455296052405.5.azuredatabricks.net
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
         run: databricks bundle deploy --debug
