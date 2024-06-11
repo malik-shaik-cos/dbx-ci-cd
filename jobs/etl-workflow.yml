@@ -1,0 +1,46 @@
+resources:
+  jobs:
+    KR_COS_GitHub_CI_CD_2:
+      name: KR-COS-GitHub-CI-CD
+      tasks:
+        - task_key: Extract
+          notebook_task:
+            notebook_path: /Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/extract
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: Transform
+          depends_on:
+            - task_key: Extract
+          notebook_task:
+            notebook_path: /Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/transform
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+        - task_key: Load
+          depends_on:
+            - task_key: Transform
+          notebook_task:
+            notebook_path: /Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/load
+            source: WORKSPACE
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 14.3.x-scala2.12
+            azure_attributes:
+              first_on_demand: 1
+              availability: ON_DEMAND_AZURE
+              spot_bid_max_price: -1
+            node_type_id: Standard_DS3_v2
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: true
+            data_security_mode: LEGACY_SINGLE_USER_STANDARD
+            runtime_engine: PHOTON
+            num_workers: 8
+      git_source:
+        git_url: https://github.com/malik-shaik-cos/dbx-ci-cd.git
+        git_provider: gitHub
+        git_branch: main
+      queue:
+        enabled: true
