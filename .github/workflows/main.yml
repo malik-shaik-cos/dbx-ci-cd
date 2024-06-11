@@ -34,9 +34,7 @@ jobs:
 
       - name: Create Databricks Asset Bundle
         run: |
-          databricks fs cp -r . /tmp/asset_bundle
-          cd /tmp/asset_bundle
-          zip -r asset_bundle.zip .
+          zip -r /tmp/asset_bundle.zip .
 
       - name: Deploy to Dev
         if: github.ref == 'refs/heads/main'
