@@ -25,7 +25,7 @@ jobs:
       - name: Convert YAML to JSON
         run: |
           pip install pyyaml
-          python -c "import yaml, json; print(json.dumps(yaml.load(open('path_to_job_config.yaml'), Loader=yaml.FullLoader)))" > path_to_job_config.json
+          python -c "import yaml, json; print(json.dumps(yaml.load(open('jobs/etl-workflow.yml'), Loader=yaml.FullLoader)))" > path_to_job_config.json
 
       - name: Authenticate to Databricks
         env:
