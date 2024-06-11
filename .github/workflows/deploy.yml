@@ -1,0 +1,41 @@
+name: Databricks Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli
+
+      - name: Convert YAML to JSON
+        run: |
+          pip install pyyaml
+          python -c "import yaml, json; print(json.dumps(yaml.load(open('path_to_job_config.yaml'), Loader=yaml.FullLoader)))" > path_to_job_config.json
+
+      - name: Authenticate to Databricks
+        env:
+          DATABRICKS_HOST: ${{ secrets.WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
+        run: |
+          databricks configure --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN"
+
+      - name: Deploy Databricks Job
+        run: |
+          databricks jobs create --json-file path_to_job_config.json
+
+      # Additional steps can be added for resource creation, such as clusters, notebooks, etc.
