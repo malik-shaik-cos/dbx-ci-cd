@@ -36,7 +36,11 @@ jobs:
       # See https://github.com/databricks/setup-cli
       - uses: databricks/setup-cli@main
 
-      - run: databricks configure --token "${{ secrets.DATABRICKS_TOKEN_DEV }}" --host "${{ secrets.WORKSPACE_URL }}"
+      - name: Write to .databrickscfg
+        run: |
+          echo "[DEFAULT]" > $HOME/.databrickscfg
+          echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
+          echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
 
       # Deploy the bundle to the "qa" target as defined
       # in the bundle's settings file.
