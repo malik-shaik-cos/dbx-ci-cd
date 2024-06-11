@@ -3,7 +3,7 @@ name: Databricks Asset Bundle Deployment
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install Databricks CLI
         run: pip install databricks-cli
