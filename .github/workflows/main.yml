@@ -1,27 +1,44 @@
-name: Deploy Databricks Notebooks
+name: Databricks Asset Bundle Deployment
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  deploy-databricks:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Deploy to Databricks
-        uses: databricks/terraform-action@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          token: ${{ secrets.DATABRICKS_TOKEN_DEV }}
-          workspace-url: ${{ secrets.WORKSPACE_URL }}
-          notebooks: |
-            [
-              {
-                "path": "/Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/extract",
-                "format": "SOURCE"
-              },
-              {
-                "path": "/Repos/malik.shaik@costrategix.com/dbx-ci-cd/src/main/transform",
-                "format": "SOURCE"
-              }
-            ]
+          python-version: '3.x'
+
+      - name: Install Databricks CLI
+        run: pip install databricks-cli
+
+      - name: Install jq
+        run: sudo apt-get install jq -y
+
+      - name: Set up Databricks environment variables
+        env:
+          DATABRICKS_HOST: ${{ secrets.WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_DEV }}
+        run: |
+          echo "DATABRICKS_HOST=$DATABRICKS_HOST" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
+
+      - name: Create Databricks Asset Bundle
+        run: |
+          databricks fs cp -r . /tmp/asset_bundle
+          cd /tmp/asset_bundle
+          zip -r asset_bundle.zip .
+
+      - name: Deploy to Dev
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST -H "Authorization: Bearer ${{ secrets.WORKSPACE_URL }}" -H "Content-Type: application/json" -d '{"path": "/path/to/dev", "overwrite": true}' "https://${{ secrets.DATABRICKS_TOKEN_DEV }}/api/2.0/workspace/import" --data-binary @/tmp/asset_bundle/asset_bundle.zip
