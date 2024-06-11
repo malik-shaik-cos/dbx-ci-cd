@@ -24,12 +24,12 @@ jobs:
   # Used by the "pipeline_update" job to deploy the bundle.
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.
-  setup-config:
-    name: Write to .databrickscfg
-    run: |
-      echo "[DEFAULT]" > $HOME/.databrickscfg
-      echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
-      echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
+  # setup-config:
+  #   name: Write to .databrickscfg
+  #   run: |
+  #     echo "[DEFAULT]" > $HOME/.databrickscfg
+  #     echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
+  #     echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
 
   deploy:
     name: "Deploy bundle"
@@ -44,10 +44,10 @@ jobs:
       - uses: databricks/setup-cli@main
 
       # - name: Write to .databrickscfg
-      #   run: |
-      #     echo "[DEFAULT]" > $HOME/.databrickscfg
-      #     echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
-      #     echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
+      - run: |
+          echo "[DEFAULT]" > $HOME/.databrickscfg
+          echo "host = ${{ secrets.WORKSPACE_URL }}" >> $HOME/.databrickscfg
+          echo "token = ${{ secrets.DATABRICKS_TOKEN_DEV }}" >> $HOME/.databrickscfg
 
       # Deploy the bundle to the "qa" target as defined
       # in the bundle's settings file.
