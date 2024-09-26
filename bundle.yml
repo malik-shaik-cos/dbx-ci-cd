@@ -4,7 +4,8 @@ bundle:
 resources:
   jobs:
     inference_job:
-      name: ${bundle.target}_inference_job
+      # name: ${bundle.target}_inference_job
+      name: DBX-CI-CD-ASSET-BUNDLE-JOB
       job_clusters:
         - job_cluster_key: inference_job_cluster
           new_cluster:
